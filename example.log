@@ -1,0 +1,6 @@
+INFO main sql.Sql - 开始进行插入
+INFO main sql.Sql - 开始进行插入
+DEBUG main org.mybatis.generator.internal.db.DatabaseIntrospector - Retrieving column information for table "t_user"
+DEBUG main org.mybatis.generator.internal.db.DatabaseIntrospector - Found column "user_id", data type 4, in table "test..t_user"
+DEBUG main org.mybatis.generator.internal.db.DatabaseIntrospector - Found column "email", data type 12, in table "test..t_user"
+DEBUG main org.mybatis.generator.internal.db.DatabaseIntrospector - Found column "name", data type 12, in table "test..t_user"
