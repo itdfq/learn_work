@@ -22,9 +22,9 @@ public class Sql {
 
     private static Logger logger = Logger.getLogger(Sql.class);
     public static void main(String[] args) {
-        String url = "jdbc:mysql://119.3.234.108:5019/test?useSSL=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
+        String url = "jdbc:mysql://119.3.234.108:3306/test?useSSL=true&useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull";
         String user = "root";
-        String password = "dfq5019.";
+        String password = "root";
         Connection conn = null;
         PreparedStatement pstm = null;
         ResultSet rt = null;
