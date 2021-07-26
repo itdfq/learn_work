@@ -42,10 +42,10 @@ class MyThread extends Thread{
             // 比起st，pst会更好些
             PreparedStatement  pst = (PreparedStatement) conn.prepareStatement("");//准备执行语句
             // 外层循环，总提交事务次数
-            for (int i = 1; i <= 5; i++) {
+            for (int i = 1; i <= 10; i++) {
                 suffix = new StringBuffer();
                 // 第j次提交步长
-                for (int j = 1; j <= 100000; j++) {
+                for (int j = 1; j <= 10000; j++) {
                     // 构建SQL后缀
                     suffix.append("('" +i*j+"','123456'"+ ",'男'"+",'教师'"+",'www.bbb.com'"+",'Java大学'"+",'"+"2016-08-16 14:43:26"+"','备注'" +"),");
                 }
@@ -76,7 +76,6 @@ public class ThreadSqlTest {
 
     public static void main(String[] args) {
        new MyThread().start();
-       new MyThread().start();
-
+        new MyThread().start();
     }
 }
