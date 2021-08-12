@@ -12,8 +12,13 @@ public class Test {
         }
     }
 
-    public static void test(String[] args){
-        Object obj = null;
-        f(obj);
+    public static void main(String[] args) {
+        //获取处理器个数
+        int i = Runtime.getRuntime().availableProcessors();
+        System.out.println("处理器个数"+i);
+        long l = Runtime.getRuntime().freeMemory();
+        System.out.println("可用内存："+l);
+        long l1 = Runtime.getRuntime().totalMemory();
+        System.out.println("总的内存："+l1);
     }
 }
