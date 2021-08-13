@@ -38,6 +38,7 @@ class MybatisGeneratorTestApplicationTests {
     @Test
     void contextLoads() {
         List<User> all = userService.findAll();
+        System.out.println(all);
         System.out.println(JSON.toJSONString(all));
     }
 }
