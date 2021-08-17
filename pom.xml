@@ -11,6 +11,12 @@
     <modules>
         <module>FunctionCode</module>
         <module>HuToolTest</module>
+        <module>Quartz</module>
+        <module>send</module>
+        <module>springbootMongoDB</module>
+        <module>SpringBootScheduled</module>
+        <module>SpringListener</module>
+        <module>Reflect</module>
     </modules>
 
     <properties>
