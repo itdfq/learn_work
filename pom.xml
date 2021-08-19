@@ -16,6 +16,7 @@
         <module>springbootMongoDB</module>
         <module>SpringBootScheduled</module>
         <module>SpringListener</module>
+        <module>MybatisGeneratorTest</module>
         <module>Reflect</module>
     </modules>
 
