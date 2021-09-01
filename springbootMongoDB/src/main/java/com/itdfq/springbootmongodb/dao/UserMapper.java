@@ -9,4 +9,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  * @Description:
  */
 public interface UserMapper extends MongoRepository<User,String> {
+
 }

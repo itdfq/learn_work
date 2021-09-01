@@ -18,6 +18,8 @@
         <module>SpringListener</module>
         <module>MybatisGeneratorTest</module>
         <module>Reflect</module>
+
+        <module>geohashDemo</module>
     </modules>
 
     <properties>
@@ -85,6 +87,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>RELEASE</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.4</version>
             <scope>compile</scope>
         </dependency>
 
