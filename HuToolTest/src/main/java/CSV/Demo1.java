@@ -7,6 +7,7 @@ import cn.hutool.core.text.csv.CsvReader;
 import cn.hutool.core.text.csv.CsvRow;
 import cn.hutool.core.text.csv.CsvUtil;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -19,7 +20,9 @@ import java.util.List;
 public class Demo1 {
     public static void main(String[] args) {
         CsvReader reader = CsvUtil.getReader();
-        CsvData data = reader.read(FileUtil.file("test.csv")) ;
+        File file = FileUtil.file("E:\\java-IDEA\\learn\\HuToolTest\\src\\main\\resources\\store.csv");
+        System.out.println(file.getPath());
+        CsvData data = reader.read(file) ;
         List<CsvRow> rows = data.getRows();
         for (CsvRow csvRow : rows) {
             Console.log(csvRow.getRawList());
