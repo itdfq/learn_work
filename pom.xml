@@ -20,6 +20,7 @@
         <module>Reflect</module>
 
         <module>geohashDemo</module>
+        <module>AnnotationTest</module>
     </modules>
 
     <properties>
