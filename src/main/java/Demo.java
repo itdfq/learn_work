@@ -1,4 +1,4 @@
-import com.alibaba.fastjson.JSON;
+
 
 /**
  * @Author GocChin
@@ -15,7 +15,7 @@ public class Demo {
         for (String ss : split){
             privilegess.append(ss).append(",");
         }
-        System.out.println(JSON.toJSONString(privilegess.toString()));
+//        System.out.println(JSON.toJSONString(privilegess.toString()));
     }
 
 

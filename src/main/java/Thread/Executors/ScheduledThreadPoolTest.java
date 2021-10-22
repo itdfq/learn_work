@@ -27,7 +27,7 @@ public class ScheduledThreadPoolTest {
         pool.execute(t1);
         pool.execute(t2);
         //使用延迟执行风格的方法
-        pool.schedule(t2,1000, TimeUnit.MILLISECONDS);
+        pool.schedule(t4,3000, TimeUnit.MILLISECONDS);
         pool.schedule(t3,1000,TimeUnit.MILLISECONDS);
         // 关闭线程池
         pool.shutdown();

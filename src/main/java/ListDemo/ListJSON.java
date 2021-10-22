@@ -1,6 +1,6 @@
 package ListDemo;
 
-import com.alibaba.fastjson.JSON;
+
 
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 public class ListJSON {
     public static void main(String[] args) {
         List<String> list = Arrays.asList("1","2","3");
-        System.out.println(JSON.toJSONString(list));
+//        System.out.println(JSON.toJSONString(list));
         System.out.println(list);
     }
 }

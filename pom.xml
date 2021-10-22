@@ -21,6 +21,7 @@
 
         <module>geohashDemo</module>
         <module>AnnotationTest</module>
+        <module>algorithm</module>
     </modules>
 
     <properties>
