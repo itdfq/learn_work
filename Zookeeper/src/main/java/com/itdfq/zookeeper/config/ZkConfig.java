@@ -1,6 +1,7 @@
 package com.itdfq.zookeeper.config;
 
 
+import com.alibaba.fastjson.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
 import org.apache.curator.framework.CuratorFramework;
@@ -8,6 +9,7 @@ import org.apache.curator.framework.CuratorFrameworkFactory;
 import org.apache.curator.framework.recipes.cache.TreeCache;
 import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,6 +122,23 @@ public class ZkConfig {
         } catch (Exception e) {
             log.error("zk配置初始化异常", e);
         }
+    }
+
+
+    /**
+     * 分布式锁 对象
+     * @param path
+     * @return
+     */
+    public  InterProcessMutex getLock(String path){
+        InterProcessMutex lock=null;
+        try {
+            lock=new InterProcessMutex(curatorFramework, projectName+SEPARATOR+path);
+            return  lock;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }
