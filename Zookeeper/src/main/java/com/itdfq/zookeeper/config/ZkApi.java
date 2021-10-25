@@ -59,7 +59,6 @@ public class ZkApi {
     }
 
 
-
     @Autowired
     private CuratorFramework curatorFramework;
     @Autowired
@@ -172,7 +171,7 @@ public class ZkApi {
             lock = new InterProcessMutex(curatorFramework, zkProperties.getProjectName() + ZkConstant.SEPARATOR + path);
             return lock;
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("获取锁失败", e);
         }
         return null;
     }
