@@ -1,12 +1,9 @@
 package com.itdfq.zookeeper;
 
-import com.alibaba.fastjson.JSON;
 import com.itdfq.zookeeper.config.ZkConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import java.util.Properties;
 
 @SpringBootTest
 class ZookeeperApplicationTests {
@@ -19,14 +16,14 @@ class ZookeeperApplicationTests {
     }
 
     @Test
-    public void get(){
+    public void get() {
         String test = zkConfig.getProperties("project.name");
         System.out.println(test);
     }
 
     @Test
-    public void  set() throws Exception {
-        zkConfig.setProperties("project.name","spring.application.name=Zookeeper123更新数据");
+    public void set() throws Exception {
+        zkConfig.setProperties("project.name", "spring.application.name=Zookeeper123更新数据");
     }
 
 

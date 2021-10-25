@@ -10,7 +10,6 @@ import org.apache.curator.framework.recipes.cache.TreeCacheEvent;
 import org.apache.curator.framework.recipes.cache.TreeCacheListener;
 import org.apache.curator.retry.ExponentialBackoffRetry;
 import org.apache.zookeeper.data.Stat;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,25 +28,35 @@ import java.util.Properties;
 @Slf4j
 public class ZkConfig {
 
-    Properties properties = new Properties();
+    private Properties properties = new Properties();
     /**
      * 可以理解curatorFramework为客户端，基本操作都由它完成
      */
-    CuratorFramework curatorFramework = null;
-    TreeCache treeCache = null;
+    private CuratorFramework curatorFramework = null;
+    private TreeCache treeCache = null;
 
     @Value("${zookeeper.url}")
     private String zkUrl;
     /**
      * 根节点
      */
-    private final String CONFIG_NAME = "/zookeeper";
+    @Value("${zookeeper.projectName}")
+    private String projectName;
+    /**
+     * 分隔符
+     */
+    private final String SEPARATOR = "/";
+    private static final int BASE_SLEEP_TIME_MS = 1000;
+    /**
+     * 最大重试次数
+     */
+    private static final int MAX_RETRIES = 3;
 
     //初始化
     private void init() {
-        RetryPolicy retryPolicy = new ExponentialBackoffRetry(1000, 3);
+        RetryPolicy retryPolicy = new ExponentialBackoffRetry(BASE_SLEEP_TIME_MS, MAX_RETRIES);
         curatorFramework = CuratorFrameworkFactory.newClient(zkUrl, retryPolicy);
-        treeCache = new TreeCache(curatorFramework, CONFIG_NAME);
+        treeCache = new TreeCache(curatorFramework, projectName);
     }
 
     /**
@@ -58,7 +67,7 @@ public class ZkConfig {
      * @throws Exception
      */
     public void setProperties(String key, String value) throws Exception {
-        String propertiesKey = CONFIG_NAME + "/" + key;
+        String propertiesKey = projectName + SEPARATOR + key;
         Stat stat = curatorFramework.checkExists().forPath(propertiesKey);
         if (stat == null) {
             curatorFramework.create().forPath(propertiesKey);
@@ -84,31 +93,32 @@ public class ZkConfig {
             treeCache.start();
 
             // 从zk中获取配置放入本地配置中
-            Stat stat = curatorFramework.checkExists().forPath(CONFIG_NAME);
+            Stat stat = curatorFramework.checkExists().forPath(projectName);
             if (stat == null) {
-                curatorFramework.create().forPath(CONFIG_NAME);
+                curatorFramework.create().forPath(projectName);
             }
-            List<String> configList = curatorFramework.getChildren().forPath(CONFIG_NAME);
-            for (String configName : configList) {
-                byte[] value = curatorFramework.getData().forPath(CONFIG_NAME + "/" + configName);
-                properties.setProperty(configName, new String(value));
+            List<String> configList = curatorFramework.getChildren().forPath(projectName);
+            if (configList.size() > 0) {
+                for (String s : configList) {
+                    byte[] value = curatorFramework.getData().forPath(projectName + SEPARATOR + s);
+                    properties.setProperty(projectName, new String(value));
+                }
             }
-
             // 监听属性值变更
             treeCache.getListenable().addListener(new TreeCacheListener() {
                 @Override
                 public void childEvent(CuratorFramework curatorFramework, TreeCacheEvent treeCacheEvent) throws Exception {
                     if (Objects.equals(treeCacheEvent.getType(), TreeCacheEvent.Type.NODE_ADDED) ||
                             Objects.equals(treeCacheEvent.getType(), TreeCacheEvent.Type.NODE_UPDATED)) {
-                        String updateKey = treeCacheEvent.getData().getPath().replace(CONFIG_NAME + "/", "");
+                        String updateKey = treeCacheEvent.getData().getPath().replace(projectName + SEPARATOR, "");
                         properties.setProperty(updateKey, new String(treeCacheEvent.getData().getData()));
-                        log.info("数据更新：更新类型【{}】，更新的key:【{}】,更新value:【{}】", treeCacheEvent.getType(), CONFIG_NAME + "/" + updateKey, new String(treeCacheEvent.getData().getData()));
+                        log.info("数据更新：更新类型【{}】，更新的key:【{}】,更新value:【{}】", treeCacheEvent.getType(), projectName + SEPARATOR + updateKey, new String(treeCacheEvent.getData().getData()));
                     }
                 }
             });
 
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("zk配置初始化异常", e);
         }
     }
 
