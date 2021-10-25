@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 @SpringBootTest
@@ -16,6 +17,13 @@ class ZookeeperApplicationTests {
 
     @Autowired
     private ZkApi zkApi;
+
+
+    @Test
+    public void gets(){
+        String sum = zkApi.getProperties("sum");
+        System.out.println(sum);
+    }
 
 
     @Test

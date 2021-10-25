@@ -1,6 +1,7 @@
 package com.itdfq.zookeeper.config;
 
 
+import com.alibaba.fastjson.JSON;
 import com.itdfq.zookeeper.constant.ZkConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.RetryPolicy;
@@ -36,16 +37,6 @@ public class ZkApi {
     private ZkProperties zkProperties;
 
     /**
-     * 配置（单例）
-     *
-     * @return
-     */
-    @Bean
-    public Properties getProperties() {
-        return new Properties();
-    }
-
-    /**
      * Zookeeper 框架式客户端
      *
      * @return CuratorFramework
@@ -67,16 +58,21 @@ public class ZkApi {
         return new TreeCache(curatorFramework, zkProperties.getProjectName());
     }
 
+
+
     @Autowired
     private CuratorFramework curatorFramework;
     @Autowired
     private TreeCache treeCache;
-
-    private Properties properties = new Properties();
+    /**
+     * 本地配置
+     */
+    private final Properties properties = new Properties();
 
     @PostConstruct
     public void loadProperties() {
         try {
+            log.info("================初始化配置=================");
             curatorFramework.start();
             treeCache.start();
             // 从zk中获取配置放入本地配置中
@@ -85,12 +81,13 @@ public class ZkApi {
                 curatorFramework.create().forPath(zkProperties.getProjectName());
             }
             List<String> configList = curatorFramework.getChildren().forPath(zkProperties.getProjectName());
-            if (configList.size() > 0) {
-                for (String s : configList) {
-                    byte[] value = curatorFramework.getData().forPath(zkProperties.getProjectName() + ZkConstant.SEPARATOR + s);
-                    properties.setProperty(zkProperties.getProjectName(), new String(value));
-                }
+            log.info("配置参数：{}", JSON.toJSONString(configList));
+            for (String s : configList) {
+                byte[] value = curatorFramework.getData().forPath(zkProperties.getProjectName() + ZkConstant.SEPARATOR + s);
+                log.info("节点:【{}】   key：【{}】   Value:【{}】 ", zkProperties.getProjectName() + ZkConstant.SEPARATOR + s, s, new String(value));
+                properties.setProperty(s, new String(value));
             }
+
             // 监听属性值变更
             treeCache.getListenable().addListener(new TreeCacheListener() {
                 @Override
@@ -110,13 +107,13 @@ public class ZkApi {
     }
 
 
-
     /**
      * 获取同步配置属性
+     * </p>
      * zk的value保存在本地缓存
      *
-     * @param key
-     * @return
+     * @param key zk-Key
+     * @return String
      */
     public String getProperties(String key) {
         return properties.getProperty(key);
@@ -124,8 +121,9 @@ public class ZkApi {
 
     /**
      * 获取zk的节点value
+     * </>
      *
-     * @return
+     * @return String
      */
     public String getZkValue(String key) {
         try {
@@ -138,8 +136,9 @@ public class ZkApi {
 
     /**
      * 设置zk的key value
-     *  <p>
+     * <p>
      * 如果项目启动，会同步更新本地配置缓存
+     *
      * @param key
      * @param value
      * @return
@@ -161,6 +160,8 @@ public class ZkApi {
 
     /**
      * 分布式锁 对象
+     * <p/>
+     * 互斥锁
      *
      * @param path
      * @return
