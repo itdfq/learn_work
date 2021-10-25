@@ -37,6 +37,7 @@ public class ZkApi {
 
     /**
      * 配置（单例）
+     *
      * @return
      */
     @Bean
@@ -46,16 +47,19 @@ public class ZkApi {
 
     /**
      * Zookeeper 框架式客户端
+     *
      * @return CuratorFramework
      */
     @Bean
     public CuratorFramework getCuratorFramework() {
+        //重试策略
         RetryPolicy retryPolicy = new ExponentialBackoffRetry(zkProperties.getBaseSleepTimeMs(), zkProperties.getMaxRetries());
         return CuratorFrameworkFactory.newClient(zkProperties.getUrl(), retryPolicy);
     }
 
     /**
      * 监视 ZK
+     *
      * @return TreeCache
      */
     @Bean
@@ -64,12 +68,11 @@ public class ZkApi {
     }
 
     @Autowired
-    private Properties properties;
-    @Autowired
     private CuratorFramework curatorFramework;
     @Autowired
     private TreeCache treeCache;
 
+    private Properties properties = new Properties();
 
     @PostConstruct
     public void loadProperties() {
@@ -107,24 +110,10 @@ public class ZkApi {
     }
 
 
-    /**
-     * 设置属性
-     *
-     * @param key
-     * @param value
-     * @throws Exception
-     */
-    public void setProperties(String key, String value) throws Exception {
-        String propertiesKey = zkProperties.getProjectName() + ZkConstant.SEPARATOR + key;
-        Stat stat = curatorFramework.checkExists().forPath(propertiesKey);
-        if (stat == null) {
-            curatorFramework.create().forPath(propertiesKey);
-        }
-        curatorFramework.setData().forPath(propertiesKey, value.getBytes());
-    }
 
     /**
-     * 获取属性
+     * 获取同步配置属性
+     * zk的value保存在本地缓存
      *
      * @param key
      * @return
@@ -133,6 +122,41 @@ public class ZkApi {
         return properties.getProperty(key);
     }
 
+    /**
+     * 获取zk的节点value
+     *
+     * @return
+     */
+    public String getZkValue(String key) {
+        try {
+            byte[] bytes = curatorFramework.getData().forPath(zkProperties.getProjectName() + ZkConstant.SEPARATOR + key);
+            return new String(bytes);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 设置zk的key value
+     *  <p>
+     * 如果项目启动，会同步更新本地配置缓存
+     * @param key
+     * @param value
+     * @return
+     */
+    public Boolean setZkValue(String key, String value) {
+        try {
+            String propertiesKey = zkProperties.getProjectName() + ZkConstant.SEPARATOR + key;
+            Stat stat = curatorFramework.checkExists().forPath(propertiesKey);
+            if (stat == null) {
+                curatorFramework.create().forPath(propertiesKey);
+            }
+            curatorFramework.setData().forPath(propertiesKey, value.getBytes());
+            return Boolean.TRUE;
+        } catch (Exception e) {
+            return Boolean.FALSE;
+        }
+    }
 
 
     /**
@@ -151,7 +175,6 @@ public class ZkApi {
         }
         return null;
     }
-
 
 
 }
