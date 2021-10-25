@@ -1,0 +1,13 @@
+# \u5E94\u7528\u540D\u79F0
+spring:
+  application:
+    name: zookeeper
+server:
+  port: 8080
+zk:
+  url: 121.36.77.21:2181
+  projectName: /itdfq/zookeeperDemo
+  #\u4F11\u7720\u65F6\u95F4
+  baseSleepTimeMs: 1000
+  #\u5931\u8D25\u91CD\u8BD5\u6B21\u6570
+  maxRetries: 3
