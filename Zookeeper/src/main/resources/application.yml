@@ -5,7 +5,7 @@ spring:
 server:
   port: 8080
 zk:
-  url: ###
+  url: 121.36.77.21:2181
   projectName: /itdfq/zookeeperDemo
   #\u4F11\u7720\u65F6\u95F4
   baseSleepTimeMs: 1000
