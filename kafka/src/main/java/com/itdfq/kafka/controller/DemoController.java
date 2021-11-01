@@ -28,4 +28,10 @@ public class DemoController {
         log.info("发送成功");
     }
 
+    @GetMapping("/send2")
+    public void send2(){
+        kafkaProducer.sendByKey("key","使用key发送");
+        log.info("发送成功");
+    }
+
 }

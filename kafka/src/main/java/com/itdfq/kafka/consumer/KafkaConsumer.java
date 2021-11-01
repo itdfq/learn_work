@@ -42,4 +42,14 @@ public class KafkaConsumer {
             ack.acknowledge();
         }
     }
+    @KafkaListener(topics = KafkaProducer.TOPIC_TEST2, groupId = KafkaProducer.TOPIC_GROUP2)
+    public void topicTest2(ConsumerRecord<?, ?> record, Acknowledgment ack, @Header(KafkaHeaders.RECEIVED_TOPIC) String topic) {
+
+        Optional message = Optional.ofNullable(record.value());
+        if (message.isPresent()) {
+            Object msg = message.get();
+            log.info("第三个 topic_test 消费了（通过获取key）： Topic:" + topic + ",Message:" + msg);
+            ack.acknowledge();
+        }
+    }
 }
